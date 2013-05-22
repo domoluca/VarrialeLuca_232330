@@ -13,13 +13,13 @@ import java.util.concurrent.locks.*;
 public class Bagno {
     int posti;
     int occupanti;
-    int i =0;
-    int j;
+    int i=0;
+    int j=0;
     Lock lockAB = null;
     Lock lockHashM;
     Lock lockHashF;
-    Lock lockListM;
-    Lock lockListF;
+    //Lock lockListM;
+    //Lock lockListF;
     Lock accessoVar;
     LinkedList<Integer> listM = new LinkedList();
     LinkedList<Integer> listF = new LinkedList();
@@ -33,8 +33,8 @@ public class Bagno {
         this.lockAB = new ReentrantLock();
         this.lockHashM = new ReentrantLock();
         this.lockHashF = new ReentrantLock();
-        this.lockListM = new ReentrantLock();
-        this.lockListF = new ReentrantLock();
+        //this.lockListM = new ReentrantLock();
+        //this.lockListF = new ReentrantLock();
         this.accessoVar = new ReentrantLock();
         this.hashM = new Hashtable<Integer, Semaphore>();
         this.hashF = new Hashtable<Integer, Semaphore>();
@@ -101,15 +101,15 @@ public class Bagno {
         public void mettiInAttesa(int pid, String sesso){
                 if ("m".equals(sesso)){
                 lockHashM.lock();
-                lockListM.lock();
+                //lockListM.lock();
                 Semaphore sem = new Semaphore(0);
                 this.hashM.put(pid, sem);
                 this.listM.addFirst(pid);
                 System.out.println("XXXXXXho appena messo in attesa l'UOMO "+this.listM.getFirst());
-                System.out.println("XXXXXdimensione ht: "+this.hashM.size());
+                System.out.println("XXXXXdimensione ht "+sesso+": "+this.hashM.size());
                 System.out.println("XXXXXdimensione lista: "+this.listM.size());
                 lockHashM.unlock();
-                lockListM.unlock();
+                //lockListM.unlock();
                 try {
                     //this.lockAB.unlock();
                     sem.acquire();
@@ -121,13 +121,15 @@ public class Bagno {
                 }
                 else{
                 lockHashF.lock();
-                lockListF.lock();
+                //lockListF.lock();
                 Semaphore sem = new Semaphore(0);
                 this.hashF.put(pid, sem);
                 this.listF.addFirst(pid);
                 System.out.println("XXXXXXho appena messo in attesa la DONNA"+this.listF.getFirst());
+                System.out.println("XXXXXdimensione ht "+sesso+": "+this.hashF.size());
+                System.out.println("XXXXXdimensione lista: "+this.listF.size());
                 lockHashF.unlock();
-                lockListF.unlock();
+                //lockListF.unlock();
                 try {
                     //this.lockAB.unlock();
                     sem.acquire();
@@ -141,11 +143,15 @@ public class Bagno {
         
         public void notificaUscita(String sesso, int pid){
                 this.lockAB.lock();
+                this.lockHashF.lock();
+                this.lockHashM.lock();
+                this.i = 0;
+                this.j = 0;
                 System.out.println(sesso+" "+pid+" entro in notificaUscita");
                 this.occupanti--;
                 if("m".equals(sesso)){
-                lockHashM.lock();
-                lockListM.lock();
+                //lockHashM.lock();
+                //lockListM.lock();
                     if(!this.listM.isEmpty()){
                         int pidLast = listM.getLast();
                         System.out.println("devo rimuovere questo:"+pidLast);
@@ -155,7 +161,7 @@ public class Bagno {
                         //this.lockAB.unlock();
                         //this.lockHashM.unlock();
                         //this.lockListM.unlock();
-                        System.out.println("111111111111");
+                        //System.out.println("111111111111");
                     }
                     else if(this.hashM.isEmpty()){
                             if(this.occupanti > 0){
@@ -167,42 +173,43 @@ public class Bagno {
                             //this.lockListM.unlock(); 
                             }
                             else{
-                            this.lockHashF.lock();
-                            this.lockListF.lock();
+                            //this.lockHashF.lock();
+                            //this.lockListF.lock();
                                 if(this.listF.isEmpty()){
                                     //this.occupanti--;
                                     this.sex = "u";
-                                    System.out.println("3333333333333");
+                                    System.out.println("il sesso è cambiato in: "+sex);
                                     //this.lockAB.unlock();
-                                    this.lockHashF.unlock();
-                                    this.lockListF.unlock();
+                                    //this.lockHashF.unlock();
+                                    //this.lockListF.unlock();
                                     //this.lockHashM.unlock();
                                     //this.lockListM.unlock();ù
                                 }
                                 else{
                                     this.sex = "f";
-                                    System.out.println("il sesso è cambiato in donna");
-                                    while(i <= this.posti || 
+                                    System.out.println("il sesso è cambiato in "+sex);
+                                    while(i <= this.posti && 
                                         !this.hashF.isEmpty()){
                                         i++;
-                                        System.out.println("44444444");
+                                        //System.out.println("44444444");
                                         int pidLast = listF.getLast();
                                         this.hashF.get(pidLast).release();
                                         this.hashF.remove(pidLast);
                                         this.listF.remove(pidLast);
                                         //this.lockAB.unlock();
-                                        this.lockHashF.unlock();
-                                        this.lockListF.unlock();}
-                                        }    
+                                        //this.lockHashF.unlock();
+                                        //this.lockListF.unlock();
+                                        }
+                                     }    
                         }}
-                    this.lockHashM.unlock();
-                    this.lockListM.unlock();
-                    this.lockAB.unlock();
+                    //this.lockHashM.unlock();
+                    //this.lockListM.unlock();
+                    //this.lockAB.unlock();
                 }
                 
                 if("f".equals(sesso)){
-                lockHashF.lock();
-                lockListF.lock();
+                //lockHashF.lock();
+                //lockListF.lock();
                     if(!this.listF.isEmpty()){
                         int pidLast = listF.getLast();
                         System.out.println("devo rimuovere questo:"+pidLast);
@@ -212,7 +219,7 @@ public class Bagno {
                         //this.lockAB.unlock();
                         //this.lockHashM.unlock();
                         //this.lockListM.unlock();
-                        System.out.println("FFFFFFFFFFFF");
+                        //System.out.println("FFFFFFFFFFFF");
                     }
                     else if(this.hashF.isEmpty()){
                             if(this.occupanti > 0){
@@ -224,37 +231,41 @@ public class Bagno {
                             //this.lockListM.unlock(); 
                             }
                             else{
-                            this.lockHashM.lock();
-                            this.lockListM.lock();
+                            //this.lockHashM.lock();
+                            //this.lockListM.lock();
                                 if(this.listM.isEmpty()){
                                     //this.occupanti--;
                                     this.sex = "u";
-                                    System.out.println("3333333333333");
+                                    System.out.println("il sesso è cambiato in: "+sex);
+                                    System.out.println("NOTIFICAUSCITA1: "+
+                                            "entrambe le code sono vuote, il bagno è UNISEX");
                                     //this.lockAB.unlock();
-                                    this.lockHashM.unlock();
-                                    this.lockListM.unlock();
+                                    //this.lockHashM.unlock();
+                                    //this.lockListM.unlock();
                                     //this.lockHashM.unlock();
                                     //this.lockListM.unlock();ù
                                 }
                                 else{
-                                    this.sex = "f";
-                                    System.out.println("il sesso è cambiato in uomo");
-                                    while(i <= this.posti || 
+                                    this.sex = "m";
+                                    System.out.println("il sesso è cambiato in: "+sex);
+                                    while(i <= this.posti && 
                                         !this.hashM.isEmpty()){
                                         j++;
-                                        System.out.println("44444444");
                                         int pidLast = listM.getLast();
                                         this.hashM.get(pidLast).release();
                                         this.hashM.remove(pidLast);
                                         this.listM.remove(pidLast);
                                         //this.lockAB.unlock();
-                                        this.lockHashM.unlock();
-                                        this.lockListM.unlock();}
-                                        }    
+                                        //this.lockHashM.unlock();
+                                        //this.lockListM.unlock();
+                                        }
+                                     }    
                         }}
-                    this.lockHashF.unlock();
-                    this.lockListF.unlock();
+                    //this.lockHashF.unlock();
+                    //this.lockListF.unlock();
+                    //this.lockAB.unlock();
+                }   this.lockHashF.unlock();
+                    this.lockHashM.unlock();
                     this.lockAB.unlock();
-                }
         }
 }
