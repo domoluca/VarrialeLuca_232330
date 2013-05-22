@@ -35,10 +35,15 @@ public class Donna extends Thread{
             
         System.out.println("[*][*][*][*]"
                           +" sono la DONNA"+pid+
-                           " e faccio richiesta per il bagno");    
+                           " e faccio richiesta per il bagno");   
+        System.out.println("");
+        
         this.bagno.accessoAlBagno(sesso, pid);
+        
+        System.out.println("");
         System.out.println("sono la donna "+pid+
                 " e ho appena finito di usare il bagno");
+        System.out.println("");
         this.cicli--;
         }
         

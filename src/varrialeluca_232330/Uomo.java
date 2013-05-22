@@ -36,13 +36,16 @@ public class Uomo extends Thread{
         
         System.out.println("[*][*][*][*]"
                           +" sono l'UOMO"+pid+
-                           " e faccio richiesta per il bagno");   
+                           " e faccio richiesta per il bagno");  
+        System.out.println("");
         
         this.bagno.accessoAlBagno(sesso, pid);
         
+        System.out.println("");
         System.out.println("sono l'uomo "+pid+ " "
                 + " e ho appena finito di usare il bagno"
                 + "");
+        System.out.println("");
         this.cicli--;
         }
         

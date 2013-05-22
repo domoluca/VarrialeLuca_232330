@@ -74,8 +74,10 @@ public class Bagno {
             this.occupanti ++;
             this.lockAB.unlock();
             if("f".equals(sesso)){
+                System.out.println("");
                 System.out.println("sono la donna "+pid+
-                                   "e sto usando il bagno");
+                                   " e sto usando il bagno");
+                System.out.println("");
                 int utilizzo = 200 + (int)(Math.random() * 400);
                 try {
                     Thread.sleep(utilizzo);
@@ -85,8 +87,10 @@ public class Bagno {
                 notificaUscita(sesso, pid);
                 }
              else if("m".equals(sesso)){
+                System.out.println(""); 
                 System.out.println("sono il maschio "+pid+
                                    " e sto usando il bagno");
+                System.out.println("");
                 int utilizzo = 100 + (int)(Math.random() * 100);
                     try {
                         Thread.sleep(utilizzo);
@@ -105,9 +109,11 @@ public class Bagno {
                 Semaphore sem = new Semaphore(0);
                 this.hashM.put(pid, sem);
                 this.listM.addFirst(pid);
+                System.out.println("");
                 System.out.println("XXXXXXho appena messo in attesa l'UOMO "+this.listM.getFirst());
                 System.out.println("XXXXXdimensione ht "+sesso+": "+this.hashM.size());
                 System.out.println("XXXXXdimensione lista: "+this.listM.size());
+                System.out.println("");
                 lockHashM.unlock();
                 //lockListM.unlock();
                 try {
@@ -125,9 +131,11 @@ public class Bagno {
                 Semaphore sem = new Semaphore(0);
                 this.hashF.put(pid, sem);
                 this.listF.addFirst(pid);
+                System.out.println("");
                 System.out.println("XXXXXXho appena messo in attesa la DONNA"+this.listF.getFirst());
                 System.out.println("XXXXXdimensione ht "+sesso+": "+this.hashF.size());
                 System.out.println("XXXXXdimensione lista: "+this.listF.size());
+                System.out.println("");
                 lockHashF.unlock();
                 //lockListF.unlock();
                 try {
@@ -147,7 +155,9 @@ public class Bagno {
                 this.lockHashM.lock();
                 this.i = 0;
                 this.j = 0;
+                //System.out.println("");
                 System.out.println(sesso+" "+pid+" entro in notificaUscita");
+                System.out.println("");
                 this.occupanti--;
                 if("m".equals(sesso)){
                     if(!this.listM.isEmpty()){
@@ -167,11 +177,15 @@ public class Bagno {
                                 if(this.listF.isEmpty()){
                                     //this.occupanti--;
                                     this.sex = "u";
+                                    System.out.println("******************************");
                                     System.out.println("il sesso è cambiato in: "+sex);
+                                    System.out.println("******************************");
                                }
                                 else{
                                     this.sex = "f";
+                                    System.out.println("******************************");
                                     System.out.println("il sesso è cambiato in "+sex);
+                                    System.out.println("******************************");
                                     while(i <= this.posti && 
                                         !this.hashF.isEmpty()){
                                         i++;
@@ -192,7 +206,7 @@ public class Bagno {
                 //lockListF.lock();
                     if(!this.listF.isEmpty()){
                         int pidLast = listF.getLast();
-                        System.out.println("devo rimuovere questo:"+pidLast);
+                        System.out.println("devo rimuovere questo: "+pidLast);
                         this.hashF.get(pidLast).release();
                         this.hashF.remove(pidLast);
                         this.listF.removeLast();
@@ -205,7 +219,7 @@ public class Bagno {
                             if(this.occupanti > 0){
                             //this.occupanti--;
                                 System.out.println(sesso+" "+pid+" vede coda vuota");
-                                System.out.println("ma nel bagno c'è ancora qualcuno");
+                                System.out.println(" ma nel bagno c'è ancora qualcuno");
                             //this.lockAB.unlock();
                             //this.lockHashM.unlock();
                             //this.lockListM.unlock(); 
@@ -216,9 +230,9 @@ public class Bagno {
                                 if(this.listM.isEmpty()){
                                     //this.occupanti--;
                                     this.sex = "u";
+                                    System.out.println("******************************");
                                     System.out.println("il sesso è cambiato in: "+sex);
-                                    System.out.println("NOTIFICAUSCITA1: "+
-                                            "entrambe le code sono vuote, il bagno è UNISEX");
+                                    System.out.println("******************************");
                                     //this.lockAB.unlock();
                                     //this.lockHashM.unlock();
                                     //this.lockListM.unlock();
@@ -227,7 +241,9 @@ public class Bagno {
                                 }
                                 else{
                                     this.sex = "m";
+                                    System.out.println("******************************");
                                     System.out.println("il sesso è cambiato in: "+sex);
+                                    System.out.println("******************************");
                                     while(j <= this.posti && 
                                         !this.hashM.isEmpty()){
                                         j++;
