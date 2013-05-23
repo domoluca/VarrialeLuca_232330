@@ -15,12 +15,15 @@ public class Bagno {
     int occupanti;
     int i=0;
     int j=0;
+    int k=0;
+    int l=0;
+    long attesaTotM;
+    long attesaTotF;
     Lock lockAB = null;
     Lock lockHashM;
     Lock lockHashF;
-    //Lock lockListM;
-    //Lock lockListF;
-    Lock accessoVar;
+    Lock attesaM;
+    Lock attesaF;
     LinkedList<Integer> listM = new LinkedList();
     LinkedList<Integer> listF = new LinkedList();
     Hashtable<Integer, Semaphore> hashM = null;
@@ -33,9 +36,8 @@ public class Bagno {
         this.lockAB = new ReentrantLock();
         this.lockHashM = new ReentrantLock();
         this.lockHashF = new ReentrantLock();
-        //this.lockListM = new ReentrantLock();
-        //this.lockListF = new ReentrantLock();
-        this.accessoVar = new ReentrantLock();
+        this.attesaM = new ReentrantLock();
+        this.attesaF = new ReentrantLock();
         this.hashM = new Hashtable<Integer, Semaphore>();
         this.hashF = new Hashtable<Integer, Semaphore>();
         this.sex = "u";
@@ -46,8 +48,8 @@ public class Bagno {
             this.lockAB.lock();
             if("u".equals(this.sex)){
             this.sex = sesso;
-            System.out.println("///////"
-                              +"adesso il sesso del bagno è: "+this.sex);
+            System.out.println(" ");
+            System.out.println("adesso il sesso del bagno è: "+this.sex);
             //this.occupanti++;
             this.lockAB.unlock();
             usaBagno(pid, sesso);
@@ -99,7 +101,6 @@ public class Bagno {
                         } 
                  notificaUscita(sesso, pid);
                     }
-            //notificaUscita(sesso);
         }
         
         public void mettiInAttesa(int pid, String sesso){
@@ -115,19 +116,15 @@ public class Bagno {
                 System.out.println("XXXXXdimensione lista: "+this.listM.size());
                 System.out.println("");
                 lockHashM.unlock();
-                //lockListM.unlock();
                 try {
-                    //this.lockAB.unlock();
                     sem.acquire();
                 } catch(Exception e){
                     System.out.println(e);
                 }
-                System.out.println("sono il maschio "+pid+" e sto per entrare in bagno!!!!!!!!!");
                 usaBagno(pid, sesso);
                 }
                 else{
                 lockHashF.lock();
-                //lockListF.lock();
                 Semaphore sem = new Semaphore(0);
                 this.hashF.put(pid, sem);
                 this.listF.addFirst(pid);
@@ -137,7 +134,6 @@ public class Bagno {
                 System.out.println("XXXXXdimensione lista: "+this.listF.size());
                 System.out.println("");
                 lockHashF.unlock();
-                //lockListF.unlock();
                 try {
                     //this.lockAB.unlock();
                     sem.acquire();
@@ -146,7 +142,6 @@ public class Bagno {
                 }
                 usaBagno(pid, sesso);
                 }
-                //usaBagno(pid, sesso);
         }
         
         public void notificaUscita(String sesso, int pid){
@@ -155,27 +150,24 @@ public class Bagno {
                 this.lockHashM.lock();
                 this.i = 0;
                 this.j = 0;
-                //System.out.println("");
-                System.out.println(sesso+" "+pid+" entro in notificaUscita");
+                System.out.println(sesso+" "+pid+" esce dal bagno");
                 System.out.println("");
                 this.occupanti--;
                 if("m".equals(sesso)){
                     if(!this.listM.isEmpty()){
                         int pidLast = listM.getLast();
-                        System.out.println("devo rimuovere questo:"+pidLast);
                         this.hashM.get(pidLast).release();
                         this.hashM.remove(pidLast);
                         this.listM.removeLast();
                     }
                     else if(this.hashM.isEmpty()){
                             if(this.occupanti > 0){
-                            //this.occupanti--;
                                 System.out.println(sesso+" "+pid+" vede coda vuota");
                                 System.out.println("ma nel bagno c'è ancora qualcuno");
+                                System.out.println(" ");
                                 }
                             else{
                                 if(this.listF.isEmpty()){
-                                    //this.occupanti--;
                                     this.sex = "u";
                                     System.out.println("******************************");
                                     System.out.println("il sesso è cambiato in: "+sex);
@@ -196,48 +188,27 @@ public class Bagno {
                                         }
                                      }    
                                 }}
-                    //this.lockHashM.unlock();
-                    //this.lockListM.unlock();
-                    //this.lockAB.unlock();
                 }
                 
                 if("f".equals(sesso)){
-                //lockHashF.lock();
-                //lockListF.lock();
                     if(!this.listF.isEmpty()){
                         int pidLast = listF.getLast();
-                        System.out.println("devo rimuovere questo: "+pidLast);
                         this.hashF.get(pidLast).release();
                         this.hashF.remove(pidLast);
                         this.listF.removeLast();
-                        //this.lockAB.unlock();
-                        //this.lockHashM.unlock();
-                        //this.lockListM.unlock();
-                        //System.out.println("FFFFFFFFFFFF");
                     }
                     else if(this.hashF.isEmpty()){
                             if(this.occupanti > 0){
-                            //this.occupanti--;
                                 System.out.println(sesso+" "+pid+" vede coda vuota");
                                 System.out.println(" ma nel bagno c'è ancora qualcuno");
-                            //this.lockAB.unlock();
-                            //this.lockHashM.unlock();
-                            //this.lockListM.unlock(); 
+                                System.out.println(" ");
                             }
                             else{
-                            //this.lockHashM.lock();
-                            //this.lockListM.lock();
                                 if(this.listM.isEmpty()){
-                                    //this.occupanti--;
                                     this.sex = "u";
                                     System.out.println("******************************");
                                     System.out.println("il sesso è cambiato in: "+sex);
                                     System.out.println("******************************");
-                                    //this.lockAB.unlock();
-                                    //this.lockHashM.unlock();
-                                    //this.lockListM.unlock();
-                                    //this.lockHashM.unlock();
-                                    //this.lockListM.unlock();ù
                                 }
                                 else{
                                     this.sex = "m";
@@ -254,11 +225,23 @@ public class Bagno {
                                         }
                                      }    
                         }}
-                    //this.lockHashF.unlock();
-                    //this.lockListF.unlock();
-                    //this.lockAB.unlock();
                 }   this.lockHashF.unlock();
                     this.lockHashM.unlock();
                     this.lockAB.unlock();
         }
+        
+        public void attesaMaschi(long mediaAttesa){
+            this.attesaM.lock();
+            attesaTotM = attesaTotM + mediaAttesa;
+            k++;
+            this.attesaM.unlock();
+            }
+        
+        public void attesaDonne(long mediaAttesa){
+            this.attesaF.lock();
+            attesaTotF = attesaTotF + mediaAttesa;
+            l++;
+            this.attesaF.unlock();
+            }
+     
 }

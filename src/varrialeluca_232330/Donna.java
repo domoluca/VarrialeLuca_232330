@@ -16,6 +16,9 @@ public class Donna extends Thread{
     String sesso;
     int pid;
     int cicli;
+    long attesa;
+    long attesaTotale;
+    long mediaAttesa;
     
     public Donna(Bagno ba, String sesso, int pid){
     this.bagno = ba;
@@ -35,17 +38,25 @@ public class Donna extends Thread{
             
         System.out.println("[*][*][*][*]"
                           +" sono la DONNA"+pid+
-                           " e faccio richiesta per il bagno");   
-        System.out.println("");
+                           " e faccio richiesta per il bagno"); 
         
+        long temp = System.currentTimeMillis();
         this.bagno.accessoAlBagno(sesso, pid);
+        long temp1 = System.currentTimeMillis();
         
-        System.out.println("");
-        System.out.println("sono la donna "+pid+
-                " e ho appena finito di usare il bagno");
-        System.out.println("");
+        attesa = (temp1 - temp);
+        attesaTotale = attesaTotale + attesa;
+        
         this.cicli--;
         }
+        mediaAttesa = attesaTotale / 8;
+        System.out.println("###########################");
+        System.out.println("La donna "+pid+" ha terminato. ");
+        System.out.println("in media ha atteso: ");
+        System.out.println(mediaAttesa+" millisecondi");
+        System.out.println("###########################");
+        System.out.println("");
+        this.bagno.attesaDonne(mediaAttesa);
         
     }
 }

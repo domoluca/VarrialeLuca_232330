@@ -34,7 +34,8 @@ public class VarrialeLuca_232330 {
             input = "";
             
             System.out.println("Inserire il numero di posti disponibili"
-                             + " nel bagno: ");
+                             + " nel bagno "
+                             +"(il numero inserito deve essere maggiore di 0): ");
             input = readln.readLine();
             posti  = (new Integer(input)).intValue();
             
@@ -70,5 +71,20 @@ public class VarrialeLuca_232330 {
         }catch(Exception e){
             System.out.println();
         }
-}
+        
+        long attesaMas = bagno.attesaTotM / bagno.k;
+        long attesaDon = bagno.attesaTotF /bagno.l;
+        System.out.println("################################################");
+        System.out.println("################################################");
+        System.out.println("");
+        System.out.println("PROGRAMMA TERMINATO");
+        System.out.println("IN MEDIA GLI UOMINI HANNO ATTESO: "+attesaMas
+                          +" millisecondi");
+        System.out.println("");
+        System.out.println("IN MEDIA LE DONNE HANNO ATTESO: "+attesaDon
+                          +" millisecondi");
+        System.out.println("");
+        System.out.println("################################################");
+        System.out.println("################################################");
+    }
 }
